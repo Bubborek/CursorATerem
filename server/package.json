@@ -4,7 +4,7 @@
   "description": "Backend server for gym access control system",
   "main": "index.js",
   "scripts": {
-    "start": "node index.js",
+    "start": "cd .. && npm install && cd client && npm install && npm run build && cd ../server && node index.js",
     "dev": "nodemon index.js",
     "db:migrate": "prisma migrate dev",
     "db:seed": "prisma db seed",

@@ -28,7 +28,9 @@ app.use((req, res, next) => {
 });
 
 // Serve static files from the React app build
-app.use(express.static(path.join(__dirname, '../client/build')));
+const buildPath = path.join(__dirname, '../client/build');
+console.log('Serving static files from:', buildPath);
+app.use(express.static(buildPath));
 
 // Health check endpoint
 app.get('/api/health', (req, res) => {
@@ -1486,7 +1488,14 @@ app.use((error, req, res, next) => {
 
 // Catch-all handler: send back React's index.html file for any non-API routes
 app.get('*', (req, res) => {
-  res.sendFile(path.join(__dirname, '../client/build', 'index.html'));
+  const indexPath = path.join(__dirname, '../client/build', 'index.html');
+  console.log('Serving index.html from:', indexPath);
+  res.sendFile(indexPath, (err) => {
+    if (err) {
+      console.error('Error serving index.html:', err);
+      res.status(404).json({ error: 'Frontend not built or not found' });
+    }
+  });
 });
 
 // Start server

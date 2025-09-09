@@ -3,5 +3,7 @@ node_modules
 .env
 *.log
 .DS_Store
-client/node_modules
+client/
 server/node_modules
+server/prisma/dev.db
+server/prisma/migrations

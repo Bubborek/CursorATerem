@@ -7,7 +7,7 @@
     "dev": "concurrently \"npm run server\" \"npm run client\"",
     "server": "cd server && npm run dev",
     "client": "cd client && npm start",
-    "build": "echo 'Starting build process...' && npm install && echo 'Installing client dependencies...' && cd client && npm install && echo 'Building React app...' && npm run build && echo 'Build completed, installing server dependencies...' && cd ../server && npm install && echo 'All done!'",
+    "build": "cd client && npm install && npm run build",
     "start": "cd server && node index.js",
     "install-all": "npm install && cd server && npm install && cd ../client && npm install",
     "setup": "node setup.js",

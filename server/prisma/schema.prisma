@@ -6,8 +6,8 @@ generator client {
 }
 
 datasource db {
-  provider = "sqlite"
-  url      = "file:./dev.db"
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
 }
 
 model Member {
@@ -143,7 +143,7 @@ model Notification {
   @@map("notifications")
 }
 
-// Enums removed for SQLite compatibility
-// Use string values instead: DAILY, MONTHLY, YEARLY, CUSTOM
+// PostgreSQL supports enums, but we're using strings for simplicity
+// Use string values: DAILY, MONTHLY, YEARLY, CUSTOM
 // Status: ACTIVE, EXPIRED  
 // Result: GRANTED, DENIED

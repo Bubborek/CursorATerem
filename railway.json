@@ -4,7 +4,7 @@
     "builder": "NIXPACKS"
   },
   "deploy": {
-    "startCommand": "echo 'Starting deployment...' && npm run build && echo 'Build completed, starting server...' && cd server && node index.js",
+    "startCommand": "chmod +x start.sh && ./start.sh",
     "healthcheckPath": "/api/health",
     "healthcheckTimeout": 100
   }

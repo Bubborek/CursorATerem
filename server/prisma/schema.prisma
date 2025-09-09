@@ -1,0 +1,149 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "sqlite"
+  url      = "file:./dev.db"
+}
+
+model Member {
+  member_id     String   @id @default(cuid())
+  username      String   @unique
+  first_name    String
+  last_name     String
+  email         String   @unique
+  phone_number  String?
+  qr_code       String   @unique
+  password_hash String?  // For user login
+  member_since  DateTime @default(now())
+  created_at    DateTime @default(now())
+  updated_at    DateTime @updatedAt
+  
+  // Gamification fields
+  total_points    Int      @default(0)
+  current_streak  Int      @default(0)
+  longest_streak  Int      @default(0)
+  level           Int      @default(1)
+  experience      Int      @default(0)
+  avatar_url      String?
+  bio             String?
+  last_visit_date DateTime?
+
+  memberships   Membership[]
+  access_logs   AccessLog[]
+  member_badges MemberBadge[]
+  daily_points  DailyPoints[]
+
+  @@map("members")
+}
+
+model Membership {
+  membership_id   String   @id @default(cuid())
+  member_id       String
+  membership_type String   // DAILY, MONTHLY, YEARLY, CUSTOM
+  purchase_date   DateTime
+  expiration_date DateTime
+  status          String   @default("ACTIVE") // ACTIVE, EXPIRED
+  created_at      DateTime @default(now())
+  updated_at      DateTime @updatedAt
+
+  member Member @relation(fields: [member_id], references: [member_id], onDelete: Cascade)
+
+  @@map("memberships")
+}
+
+model Staff {
+  staff_id     String   @id @default(cuid())
+  first_name   String
+  last_name    String
+  email        String   @unique
+  password_hash String
+  role         String   @default("staff") // "admin" or "staff"
+  is_active    Boolean  @default(true)
+  created_by   String?  // ID of admin who created this staff
+  created_at   DateTime @default(now())
+  updated_at   DateTime @updatedAt
+
+  access_logs  AccessLog[] // Scans performed by this staff member
+
+  @@map("staff")
+}
+
+model AccessLog {
+  log_id    String   @id @default(cuid())
+  member_id String
+  scanned_by String? // ID of staff member who performed the scan
+  scan_time DateTime @default(now())
+  result    String   // GRANTED, DENIED
+
+  member Member @relation(fields: [member_id], references: [member_id], onDelete: Cascade)
+  staff  Staff? @relation(fields: [scanned_by], references: [staff_id], onDelete: SetNull)
+
+  @@map("access_logs")
+}
+
+model Badge {
+  badge_id    String   @id @default(cuid())
+  name        String   @unique
+  description String
+  icon_url    String?
+  rarity      String   @default("COMMON") // COMMON, RARE, EPIC, LEGENDARY
+  point_value Int      @default(50) // Points awarded when badge is earned
+  criteria    String   // JSON string describing how to earn this badge
+  created_at  DateTime @default(now())
+  updated_at  DateTime @updatedAt
+
+  member_badges MemberBadge[]
+
+  @@map("badges")
+}
+
+model MemberBadge {
+  member_badge_id String   @id @default(cuid())
+  member_id       String
+  badge_id        String
+  earned_date     DateTime @default(now())
+
+  member Member @relation(fields: [member_id], references: [member_id], onDelete: Cascade)
+  badge  Badge  @relation(fields: [badge_id], references: [badge_id], onDelete: Cascade)
+
+  @@unique([member_id, badge_id])
+  @@map("member_badges")
+}
+
+model DailyPoints {
+  daily_points_id String   @id @default(cuid())
+  member_id       String
+  date            DateTime @default(now())
+  base_points     Int      @default(100) // Base points for visiting
+  streak_multiplier Float  @default(1.0) // Current streak multiplier
+  total_points    Int      // base_points * streak_multiplier
+  created_at      DateTime @default(now())
+
+  member Member @relation(fields: [member_id], references: [member_id], onDelete: Cascade)
+
+  @@unique([member_id, date])
+  @@map("daily_points")
+}
+
+model Notification {
+  notification_id String   @id @default(cuid())
+  member_id       String
+  title           String
+  message         String
+  type            String   // INFO, WARNING, SUCCESS, PROMOTION, ACHIEVEMENT, LEADERBOARD
+  is_read         Boolean  @default(false)
+  created_at      DateTime @default(now())
+  updated_at      DateTime @updatedAt
+
+  @@map("notifications")
+}
+
+// Enums removed for SQLite compatibility
+// Use string values instead: DAILY, MONTHLY, YEARLY, CUSTOM
+// Status: ACTIVE, EXPIRED  
+// Result: GRANTED, DENIED

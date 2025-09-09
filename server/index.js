@@ -28,7 +28,7 @@ app.use((req, res, next) => {
 });
 
 // Serve static files from the React app build
-const buildPath = path.join(__dirname, '../client/build');
+const buildPath = path.join(__dirname, '../../client/build');
 console.log('Serving static files from:', buildPath);
 
 // Check if build directory exists

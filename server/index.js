@@ -30,6 +30,17 @@ app.use((req, res, next) => {
 // Serve static files from the React app build
 const buildPath = path.join(__dirname, '../client/build');
 console.log('Serving static files from:', buildPath);
+
+// Check if build directory exists
+const fs = require('fs');
+if (fs.existsSync(buildPath)) {
+  console.log('Build directory exists:', buildPath);
+  const files = fs.readdirSync(buildPath);
+  console.log('Build directory contents:', files);
+} else {
+  console.log('Build directory does not exist:', buildPath);
+}
+
 app.use(express.static(buildPath));
 
 // Health check endpoint

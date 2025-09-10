@@ -1519,7 +1519,13 @@ app.use((error, req, res, next) => {
 });
 
 // Catch-all handler: send back React's index.html file for any non-API routes
-app.get('*', (req, res) => {
+// Only handle non-API routes
+app.get('*', (req, res, next) => {
+  // Skip API routes
+  if (req.path.startsWith('/api/')) {
+    return next();
+  }
+  
   const indexPath = path.join(__dirname, '../client/build', 'index.html');
   console.log('Serving index.html from:', indexPath);
   res.sendFile(indexPath, (err) => {

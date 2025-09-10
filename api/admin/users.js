@@ -1,9 +1,18 @@
 const { PrismaClient } = require('@prisma/client');
 
-const prisma = new PrismaClient();
+const prisma = new PrismaClient({
+  datasources: {
+    db: {
+      url: process.env.DATABASE_URL,
+    },
+  },
+});
 
 module.exports = async (req, res) => {
   try {
+    console.log('Fetching users from database...');
+    console.log('DATABASE_URL exists:', !!process.env.DATABASE_URL);
+    
     const staff = await prisma.staff.findMany({
       select: {
         staff_id: true,
@@ -27,6 +36,8 @@ module.exports = async (req, res) => {
       }
     });
     
+    console.log('Found staff:', staff.length, 'members:', members.length);
+    
     res.json({ 
       staff, 
       members, 
@@ -35,6 +46,12 @@ module.exports = async (req, res) => {
     });
   } catch (error) {
     console.error('Error fetching users:', error);
-    res.status(500).json({ error: 'Failed to fetch users' });
+    res.status(500).json({ 
+      error: 'Failed to fetch users',
+      details: error.message,
+      stack: error.stack
+    });
+  } finally {
+    await prisma.$disconnect();
   }
 };

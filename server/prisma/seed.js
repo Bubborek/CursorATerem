@@ -39,6 +39,7 @@ async function main() {
     where: { email: 'john.doe@example.com' },
     update: {},
     create: {
+      username: 'johndoe',
       first_name: 'John',
       last_name: 'Doe',
       email: 'john.doe@example.com',
@@ -52,6 +53,7 @@ async function main() {
     where: { email: 'jane.smith@example.com' },
     update: {},
     create: {
+      username: 'janesmith',
       first_name: 'Jane',
       last_name: 'Smith',
       email: 'jane.smith@example.com',
@@ -65,6 +67,7 @@ async function main() {
     where: { email: 'bob.johnson@example.com' },
     update: {},
     create: {
+      username: 'bobjohnson',
       first_name: 'Bob',
       last_name: 'Johnson',
       email: 'bob.johnson@example.com',
@@ -142,8 +145,10 @@ async function main() {
   console.log('Created access logs:', { accessLog1, accessLog2, accessLog3 });
 
   // Create sample badges
-  const badge1 = await prisma.badge.create({
-    data: {
+  const badge1 = await prisma.badge.upsert({
+    where: { name: 'First Visit' },
+    update: {},
+    create: {
       name: 'First Visit',
       description: 'Welcome to the gym! Your first visit is complete.',
       icon_url: '🏋️',
@@ -151,8 +156,10 @@ async function main() {
     }
   });
 
-  const badge2 = await prisma.badge.create({
-    data: {
+  const badge2 = await prisma.badge.upsert({
+    where: { name: 'Regular Visitor' },
+    update: {},
+    create: {
       name: 'Regular Visitor',
       description: 'You\'ve visited 10 times! Keep up the great work.',
       icon_url: '💪',
@@ -160,8 +167,10 @@ async function main() {
     }
   });
 
-  const badge3 = await prisma.badge.create({
-    data: {
+  const badge3 = await prisma.badge.upsert({
+    where: { name: 'Streak Master' },
+    update: {},
+    create: {
       name: 'Streak Master',
       description: 'You\'ve maintained a 7-day streak!',
       icon_url: '🔥',
@@ -169,8 +178,10 @@ async function main() {
     }
   });
 
-  const badge4 = await prisma.badge.create({
-    data: {
+  const badge4 = await prisma.badge.upsert({
+    where: { name: 'Monthly Champion' },
+    update: {},
+    create: {
       name: 'Monthly Champion',
       description: 'You\'ve visited 20 times this month!',
       icon_url: '🏆',

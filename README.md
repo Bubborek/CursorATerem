@@ -229,21 +229,22 @@ npx prisma migrate dev --name your-migration-name
 
 ## Production Deployment
 
-### Environment Setup
-1. Set `NODE_ENV=production`
-2. Use a production PostgreSQL database
-3. Set strong JWT secret
-4. Configure proper CORS settings
-5. Use HTTPS in production
+This application is deployed on **Vercel** with the following configuration:
 
-### Build for Production
-```bash
-# Build frontend
-npm run build
+### Vercel Deployment
+- **Frontend**: React app built and served as static files
+- **Backend**: Node.js serverless functions in `/api` directory
+- **Database**: PostgreSQL (Neon) with Prisma ORM
+- **Environment Variables**: Set in Vercel dashboard
 
-# Start production server
-npm start
-```
+### Environment Variables Required
+- `DATABASE_URL` - PostgreSQL connection string
+- `JWT_SECRET` - Secret key for JWT tokens
+- `REACT_APP_API_URL` - Frontend API base URL
+
+### Live Application
+- **URL**: https://cursor-a-terem-beengedo.vercel.app
+- **API Health**: https://cursor-a-terem-beengedo.vercel.app/api/health
 
 ## Contributing
 

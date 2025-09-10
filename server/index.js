@@ -28,7 +28,8 @@ app.use((req, res, next) => {
 });
 
 // Serve static files from the React app build
-const buildPath = path.join(__dirname, '../../client/build');
+// For Vercel, the project root is the repo root, so the build is at ../client/build
+const buildPath = path.join(__dirname, '../client/build');
 console.log('Serving static files from:', buildPath);
 
 // Check if build directory exists
@@ -1510,9 +1511,14 @@ app.get('*', (req, res) => {
 });
 
 // Start server
-app.listen(PORT, () => {
-  console.log(`Server running on port ${PORT}`);
-});
+// Only start listening when running directly (e.g., local dev). On Vercel, we export the app.
+if (require.main === module) {
+  app.listen(PORT, () => {
+    console.log(`Server running on port ${PORT}`);
+  });
+}
+
+module.exports = app;
 
 // Graceful shutdown
 process.on('SIGINT', async () => {

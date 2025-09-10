@@ -1,19 +1,10 @@
-const { PrismaClient } = require('@prisma/client');
-
-const prisma = new PrismaClient({
-  datasources: {
-    db: {
-      url: process.env.DATABASE_URL,
-    },
-  },
-});
-
 module.exports = async (req, res) => {
   try {
     res.json({ 
       status: 'OK', 
       timestamp: new Date().toISOString(),
-      database: 'connected'
+      database: 'connected',
+      environment: process.env.NODE_ENV || 'development'
     });
   } catch (error) {
     res.status(500).json({ error: 'Server error' });

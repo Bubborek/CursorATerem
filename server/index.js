@@ -52,20 +52,54 @@ app.get('/api/health', (req, res) => {
 // Admin endpoint to view all users (for testing)
 app.get('/api/admin/users', async (req, res) => {
   try {
-    const users = await prisma.user.findMany({
+    const staff = await prisma.staff.findMany({
       select: {
-        id: true,
+        staff_id: true,
         email: true,
-        name: true,
+        first_name: true,
+        last_name: true,
         role: true,
-        createdAt: true,
-        isActive: true
+        created_at: true,
+        is_active: true
       }
     });
-    res.json({ users, count: users.length });
+    
+    const members = await prisma.member.findMany({
+      select: {
+        member_id: true,
+        email: true,
+        first_name: true,
+        last_name: true,
+        username: true,
+        created_at: true
+      }
+    });
+    
+    res.json({ 
+      staff, 
+      members, 
+      staffCount: staff.length,
+      memberCount: members.length 
+    });
   } catch (error) {
     console.error('Error fetching users:', error);
     res.status(500).json({ error: 'Failed to fetch users' });
+  }
+});
+
+// Admin endpoint to seed database (for testing)
+app.post('/api/admin/seed', async (req, res) => {
+  try {
+    // Run the seed script
+    const { exec } = require('child_process');
+    const { promisify } = require('util');
+    const execAsync = promisify(exec);
+    
+    await execAsync('npx prisma db seed');
+    res.json({ message: 'Database seeded successfully' });
+  } catch (error) {
+    console.error('Error seeding database:', error);
+    res.status(500).json({ error: 'Failed to seed database' });
   }
 });
 
